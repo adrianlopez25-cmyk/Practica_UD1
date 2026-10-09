@@ -58,4 +58,13 @@ Practica_U.../
 
 * **POST /talleres/:id/inscripcion**: Es la ruta que recibe los datos del formulario (nombre y email). Primero comprueba en el servidor que sigan quedando plazas libres. Si no hay plazas, frena el proceso y muestra el error. Luego valida los campos (el formato del email y la Regex del nombre) y revisa con estaInscrito que el correo no esté ya registrado en ese taller. Si pasa todas las comprobaciones, guarda la inscripción en el array y hace un res.redirect(/talleres) para aplicar el patrón PRG y evitar envíos duplicados.
 
+## 🧪 Ejemplos de pruebas con `curl`
+
+Para probar que todas las funcionalidades y rutas funcionan correctamente desde la consola, se pueden lanzar las siguientes peticiones (con el servidor arrancado en `http://localhost:3000`):
+
+### 1. Ver el catálogo con plazas actualizadas (`GET /talleres`)
+Con este comando compruebo que la ruta principal carga la lista de talleres y ejecuta obtenerPlazasRestantes para mostrar el aforo al momento:
+```bash
+curl -X GET http://localhost:3000/talleres
+```
 
