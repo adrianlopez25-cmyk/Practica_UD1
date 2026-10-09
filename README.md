@@ -50,12 +50,12 @@ Practica_U.../
 
 ## Explicación de las rutas (GET y POST)
 
-* **`GET /`**: Es la ruta inicial del servidor. La he puesto para que redirija directamente a `/talleres` con un `res.redirect`, así nadie se encuentra una página vacía o un error al entrar.
+* **GET /**: Es la ruta inicial del servidor. La he puesto para que redirija directamente a /talleres con un res.redirect, así nadie se encuentra una página vacía o un error al entrar.
 
-* **`GET /talleres`**: Es el catálogo general. Antes de renderizar la vista `index.ejs`, recorro el array de talleres y ejecuto `obtenerPlazasRestantes` en cada uno para calcular el aforo al momento. De esta forma, el catálogo siempre muestra las plazas reales que quedan.
+* **GET /talleres**: Es el catálogo general. Antes de renderizar la vista index.ejs, recorro el array de talleres y ejecuto obtenerPlazasRestantes en cada uno para calcular el aforo al momento. De esta forma, el catálogo siempre muestra las plazas reales que quedan.
 
-* **`GET /talleres/:id`**: Carga la página de detalle de un taller específico (`detalle-taller.ejs`) donde está el formulario de inscripción. Coge el `id` que viene en la URL, busca el taller en los datos (si no lo encuentra devuelve un 404) y calcula sus plazas disponibles para pasárselas a la plantilla.
+* **GET /talleres/:id**: Carga la página de detalle de un taller específico (detalle-taller.ejs) donde está el formulario de inscripción. Coge el id que viene en la URL, busca el taller en los datos (si no lo encuentra devuelve un 404) y calcula sus plazas disponibles para pasárselas a la plantilla.
 
-* **`POST /talleres/:id/inscripcion`**: Es la ruta que recibe los datos del formulario (`nombre` y `email`). Primero comprueba en el servidor que sigan quedando plazas libres. Si no hay plazas, frena el proceso y muestra el error. Luego valida los campos (el formato del email y la Regex del nombre) y revisa con `estaInscrito` que el correo no esté ya registrado en ese taller. Si pasa todas las comprobaciones, guarda la inscripción en el array y hace un `res.redirect('/talleres')` para aplicar el patrón PRG y evitar envíos duplicados.
+* **POST /talleres/:id/inscripcion**: Es la ruta que recibe los datos del formulario (nombre y email). Primero comprueba en el servidor que sigan quedando plazas libres. Si no hay plazas, frena el proceso y muestra el error. Luego valida los campos (el formato del email y la Regex del nombre) y revisa con estaInscrito que el correo no esté ya registrado en ese taller. Si pasa todas las comprobaciones, guarda la inscripción en el array y hace un res.redirect(/talleres) para aplicar el patrón PRG y evitar envíos duplicados.
 
 
