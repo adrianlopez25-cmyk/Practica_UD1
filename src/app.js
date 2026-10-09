@@ -18,14 +18,14 @@ const __dirname = path.dirname(__filename);
 
 // 1. Configuración del motor de plantillas EJS
 app.set('view engine', 'ejs');
-// Al estar app.js en 'src', subimos un nivel con '..' para encontrar 'views'
+// Al estar app.js en 'src', subi un nivel con '..' para encontrar 'views'
 app.set('views', path.join(__dirname, '../views'));
 
 // 2. Middlewares esenciales
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, '../public')));
 
-
+//Mis rutas
 // Ruta 1: Redirección automática de la raíz al catálogo
 app.get('/', (req, res) => {
   res.redirect('/talleres');
@@ -97,5 +97,5 @@ app.post('/talleres/:id/inscripcion', (req, res) => {
   res.redirect('/talleres');
 });
 
-// Exportamos la app para que la utilice server.js
+// Exportamamos la app para que la utilice server.js
 export default app;
