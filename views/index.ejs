@@ -3,57 +3,35 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title><%= taller.nombre %></title>
-  <link rel="stylesheet" href="/public/estilos.css">
+  <title>Catálogo de Talleres</title>
+  <link rel="stylesheet" href="/estilos.css">
 </head>
 <body>
   <main class="container">
-    <a href="/talleres">← Volver al catálogo</a>
+    <h1>Talleres Disponibles</h1>
 
-    <section class="detalle">
-      <h1><%= taller.nombre %></h1>
-      <p><%= taller.descripcion %></p>
-      <p><strong>Plazas restantes:</strong> <%= plazasRestantes %></p>
-    </section>
+    <div class="talleres-grid">
+      <% talleres.forEach(taller => { %>
+        <article class="taller-card">
+          <h2><%= taller.titulo %></h2> 
+          
+          <p><%= taller.resumen %></p> 
 
-    <hr>
-
-    <section class="formulario-section">
-      <h2>Inscripción al taller</h2>
-
-      <form action="/talleres/<%= taller.id %>/inscripcion" method="POST" novalidate>
-        
-        <!-- Campo Nombre -->
-        <div class="form-group">
-          <label for="nombre">Nombre completo:</label>
-          <input 
-            type="text" 
-            id="nombre" 
-            name="nombre" 
-            value="<%= valores.nombre || '' %>"
-          >
-          <% if (errores.nombre) { %>
-            <span class="error"><%= errores.nombre %></span>
+          <% if (typeof taller.plazasRestantes !== 'undefined') { %>
+            <p>
+              <strong>Plazas restantes:</strong> <%= taller.plazasRestantes %>
+              <% if (taller.plazasRestantes === 1) { %>
+                <span style="color: #d9534f; font-weight: bold; margin-left: 5px;">⚠️ ¡Última plaza!</span>
+              <% } else if (taller.plazasRestantes === 0) { %>
+                <span style="color: #6c757d; font-style: italic; margin-left: 5px;">(Completo)</span>
+              <% } %>
+            </p>
           <% } %>
-        </div>
-
-        <!-- Campo Email -->
-        <div class="form-group">
-          <label for="email">Correo electrónico:</label>
-          <input 
-            type="email" 
-            id="email" 
-            name="email" 
-            value="<%= valores.email || '' %>"
-          >
-          <% if (errores.email) { %>
-            <span class="error"><%= errores.email %></span>
-          <% } %>
-        </div>
-
-        <button type="submit" class="btn">Inscribirme</button>
-      </form>
-    </section>
+          
+          <a href="/talleres/<%= taller.id %>" class="btn">Ver detalle e inscribirme</a>
+        </article>
+      <% }); %>
+    </div>
   </main>
 </body>
 </html>

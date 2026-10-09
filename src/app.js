@@ -18,22 +18,28 @@ const __dirname = path.dirname(__filename);
 
 // 1. Configuración del motor de plantillas EJS
 app.set('view engine', 'ejs');
-// Al estar app.js en 'src', subi un nivel con '..' para encontrar 'views'
+// Al estar app.js en 'src', subo un nivel con '..' para encontrar 'views'
 app.set('views', path.join(__dirname, '../views'));
 
 // 2. Middlewares esenciales
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, '../public')));
 
-//Mis rutas
+// Mis rutas
+
 // Ruta 1: Redirección automática de la raíz al catálogo
 app.get('/', (req, res) => {
   res.redirect('/talleres');
 });
 
-// Ruta 2: Listado general de talleres
+// Ruta 2: Listado general de talleres (calcula plazas en tiempo real para la vista)
 app.get('/talleres', (req, res) => {
-  res.render('index', { talleres });
+  const talleresConPlazas = talleres.map(taller => ({
+    ...taller,
+    plazasRestantes: obtenerPlazasRestantes(taller, inscripciones)
+  }));
+
+  res.render('index', { talleres: talleresConPlazas });
 });
 
 // Ruta 3: Detalle de un taller individual y su formulario
@@ -45,7 +51,8 @@ app.get('/talleres/:id', (req, res) => {
     return res.status(404).send('Taller no encontrado');
   }
 
-  const plazasRestantes = obtenerPlazasRestantes(tallerId);
+  // Pasamos el objeto taller completo y el array de inscripciones
+  const plazasRestantes = obtenerPlazasRestantes(taller, inscripciones);
 
   res.render('detalle-taller', { 
     taller, 
@@ -55,7 +62,7 @@ app.get('/talleres/:id', (req, res) => {
   });
 });
 
-// Ruta 4: Procesamiento del formulario de inscripción a los cursos
+// Ruta 4: Procesamiento del formulario de inscripción (Aplicando patrón PRG y control de aforo)
 app.post('/talleres/:id/inscripcion', (req, res) => {
   const tallerId = Number(req.params.id);
   const taller = talleres.find(t => t.id === tallerId);
@@ -64,18 +71,28 @@ app.post('/talleres/:id/inscripcion', (req, res) => {
     return res.status(404).send('Taller no encontrado');
   }
 
+  // Comprobar plazas disponibles en el servidor al recibir la solicitud
+  const plazasRestantes = obtenerPlazasRestantes(taller, inscripciones);
+  if (plazasRestantes <= 0) {
+    return res.render('detalle-taller', {
+      taller,
+      plazasRestantes: 0,
+      errores: { email: 'Lo sentimos, este taller ya no tiene plazas disponibles.' },
+      valores: req.body
+    });
+  }
+
   const datosFormulario = req.body;
   const resultado = validarInscripcion(datosFormulario);
 
   // Compruebo si la persona ya está inscrita en este taller
-  if (resultado.esValido && estaInscrito(tallerId, resultado.valores.email)) {
+  if (resultado.esValido && estaInscrito(tallerId, resultado.valores.email, inscripciones)) {
     resultado.esValido = false;
     resultado.errores.email = 'Este correo electrónico ya está inscrito en este taller.';
   }
 
-  // Si hay errores de validación o duplicado, volvere a renderizar la vista con los errores
+  // Si hay errores de validación o duplicado, volvemos a renderizar la vista con los errores
   if (!resultado.esValido) {
-    const plazasRestantes = obtenerPlazasRestantes(tallerId);
     return res.render('detalle-taller', { 
       taller, 
       plazasRestantes,
@@ -84,7 +101,7 @@ app.post('/talleres/:id/inscripcion', (req, res) => {
     });
   }
 
-  // Si la validación es correcta, guardo la nueva inscripción
+  // Si todo es correcto, registramos la nueva inscripción en memoria
   const nuevaInscripcion = {
     id: Date.now(),
     tallerId: tallerId,
@@ -93,9 +110,9 @@ app.post('/talleres/:id/inscripcion', (req, res) => {
   };
   inscripciones.push(nuevaInscripcion);
 
-  // Patron PRG
+  // Patrón PRG
   res.redirect('/talleres');
 });
 
-// Exportamamos la app para que la utilice server.js
+// Exportamos la app para que la utilice server.js
 export default app;
