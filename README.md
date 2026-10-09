@@ -37,17 +37,18 @@ Practica_U.../
 ```
 ---
 ## Explicación de las funcionalidades
-**Cálculo de plazas restantes:** He utilizado la función auxiliar `obtenerPlazasRestantes`. Con esta cuento cuántas inscripciones coinciden en el array `inscripciones` con el `tallerId` del taller actual, y luego se lo resto al aforo total del taller para saber cuántas plazas quedan disponibles.
 
+* **Cálculo de plazas restantes:** He utilizado la función auxiliar `obtenerPlazasRestantes`. Con esta cuento cuántas inscripciones coinciden en el array `inscripciones` con el `tallerId` del taller actual, y luego se lo resto al aforo total del taller para saber cuántas plazas quedan disponibles.
+ 
 * **Control de aforo** Lo evaluó de forma síncrona para evitar que mientras esta abierto el servidor entran mas solicitudes que plazas tenga el curso. Para ello llamo a la función obtenerPlazasRestantes y compruebo si es igual o menor que 0, si es el caso pues muestro un mensaje de que no es posible unirse al taller por que no hay plazas disponible, en caso contrario, se realiza la reserva.
-* 
+ 
 * **Validaciones de datos y formato Regex** He realizado validaciones para el nombre del usuario y el email, para email pude controlarlo facil obligando a que tenga un @ y un . que no es lo mejor pero es funcional. Pero para nombre no sabia como controlarlo por lo que le pedí a la IA que me diera una expresión regular.
-* 
+  
 * **Control de correos duplicados por taller** Para esto emplee la función estaIncrito, que controla que durante el POST se busque en el array inscripciones y si se combina el tallerID y el email, se muestre un error por email repetido en el curso.
-* 
+  
 * **Patron PRG** En el Post programado que en caso de que sea exitosa la inscripción, se redirija a la pagina principal a través de un GET para que no haya opción de reenvió de solicitudes.
 
-* ## Explicación de las rutas (GET y POST)
+## Explicación de las rutas (GET y POST)
 
 * **`GET /`**: Es la ruta inicial del servidor. La he puesto para que redirija directamente a `/talleres` con un `res.redirect`, así nadie se encuentra una página vacía o un error al entrar.
 
