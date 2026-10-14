@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= taller.titulo %></title>
+  <link rel="stylesheet" href="/estilos.css">
+</head>
+<body>
+  <main class="container">
+    <a href="/talleres">← Volver al catálogo</a>
+
+    <section class="detalle">
+      <h1><%= taller.titulo %></h1>
+      <p><%= taller.resumen %></p>
+      
+      <p>
+        <strong>Plazas restantes:</strong> <%= plazasRestantes %>
+        
+        <% if (plazasRestantes === 1) { %>
+          <span style="color: #d9534f; font-weight: bold; margin-left: 10px;">
+            ⚠️ ¡Última plaza disponible!
+          </span>
+        <% } else if (plazasRestantes === 0) { %>
+          <span style="color: #6c757d; font-style: italic; margin-left: 10px;">
+            (Sin plazas disponibles)
+          </span>
+        <% } %>
+      </p>
+    </section>
+
+    <hr>
+
+    <section class="formulario-section">
+      <h2>Inscripción al taller</h2>
+
+      <form action="/talleres/<%= taller.id %>/inscripcion" method="POST" novalidate>
+        
+        <div class="form-group">
+          <label for="nombre">Nombre completo:</label>
+          <input 
+            type="text" 
+            id="nombre" 
+            name="nombre" 
+            value="<%= valores.nombre || '' %>"
+            <%= plazasRestantes === 0 ? 'disabled' : '' %>
+          >
+          <% if (errores.nombre) { %>
+            <span class="error"><%= errores.nombre %></span>
+          <% } %>
+        </div>
+
+        <div class="form-group">
+          <label for="email">Correo electrónico:</label>
+          <input 
+            type="email" 
+            id="email" 
+            name="email" 
+            value="<%= valores.email || '' %>"
+            <%= plazasRestantes === 0 ? 'disabled' : '' %>
+          >
+          <% if (errores.email) { %>
+            <span class="error"><%= errores.email %></span>
+          <% } %>
+        </div>
+
+        <button 
+          type="submit" 
+          class="btn" 
+          <%= plazasRestantes === 0 ? 'disabled' : '' %>
+        >
+          <%= plazasRestantes === 0 ? 'Aforo completo' : 'Inscribirme' %>
+        </button>
+      </form>
+    </section>
+  </main>
+</body>
+</html>

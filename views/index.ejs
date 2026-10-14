@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Catálogo de Talleres</title>
+  <link rel="stylesheet" href="/estilos.css">
+</head>
+<body>
+  <main class="container">
+    <h1>Talleres Disponibles</h1>
+
+    <!-- Formulario de Filtros -->
+    <section class="filtros-container">
+      <form action="/talleres" method="GET" class="formulario-filtros">
+        
+        <div class="grupo-filtro">
+          <label for="categoria">Categoría:</label>
+          <select name="categoria" id="categoria">
+            <option value="todas" <%= filtros.categoria === 'todas' ? 'selected' : '' %>>Todas</option>
+            <% categorias.forEach(cat => { %>
+              <option value="<%= cat %>" <%= filtros.categoria === cat ? 'selected' : '' %>><%= cat %></option>
+            <% }); %>
+          </select>
+        </div>
+
+        <div class="grupo-filtro">
+          <label for="nivel">Nivel:</label>
+          <select name="nivel" id="nivel">
+            <option value="todos" <%= filtros.nivel === 'todos' ? 'selected' : '' %>>Todos</option>
+            <% niveles.forEach(niv => { %>
+              <option value="<%= niv %>" <%= filtros.nivel === niv ? 'selected' : '' %>><%= niv %></option>
+            <% }); %>
+          </select>
+        </div>
+
+        <div class="grupo-filtro">
+          <label for="disponibilidad">Disponibilidad:</label>
+          <select name="disponibilidad" id="disponibilidad">
+            <option value="todas" <%= filtros.disponibilidad === 'todas' ? 'selected' : '' %>>Todas</option>
+            <option value="disponibles" <%= filtros.disponibilidad === 'disponibles' ? 'selected' : '' %>>Con plazas</option>
+            <option value="completos" <%= filtros.disponibilidad === 'completos' ? 'selected' : '' %>>Completos</option>
+          </select>
+        </div>
+
+        <div class="botones-filtro">
+          <button type="submit" class="btn">Filtrar</button>
+          <a href="/talleres" class="btn btn-limpiar">Limpiar filtros</a>
+        </div>
+
+      </form>
+    </section>
+
+    <!-- Listado de Talleres -->
+    <div class="talleres-grid">
+      <% if (talleres.length === 0) { %>
+        <p class="sin-resultados">No se encontraron talleres que coincidan con los filtros seleccionados.</p>
+      <% } else { %>
+        <% talleres.forEach(taller => { %>
+          <article class="taller-card">
+            <h2><%= taller.titulo %></h2> 
+            
+            <p><%= taller.resumen %></p> 
+
+            <% if (taller.categoria || taller.nivel) { %>
+              <p class="taller-etiquetas">
+                <% if (taller.categoria) { %><span class="badge"><%= taller.categoria %></span><% } %>
+                <% if (taller.nivel) { %><span class="badge badge-nivel"><%= taller.nivel %></span><% } %>
+              </p>
+            <% } %>
+
+            <% if (typeof taller.plazasRestantes !== 'undefined') { %>
+              <p>
+                <strong>Plazas restantes:</strong> <%= taller.plazasRestantes %>
+                <% if (taller.plazasRestantes === 1) { %>
+                  <span style="color: #d9534f; font-weight: bold; margin-left: 5px;">⚠️ ¡Última plaza!</span>
+                <% } else if (taller.plazasRestantes === 0) { %>
+                  <span style="color: #6c757d; font-style: italic; margin-left: 5px;">(Completo)</span>
+                <% } %>
+              </p>
+            <% } %>
+            
+            <a href="/talleres/<%= taller.id %>" class="btn">Ver detalle e inscribirme</a>
+          </article>
+        <% }); %>
+      <% } %>
+    </div>
+  </main>
+</body>
+</html>
