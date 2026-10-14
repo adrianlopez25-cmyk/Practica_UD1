@@ -6,6 +6,7 @@ Aplicación web desarrollada con **Node.js**, **Express** y **EJS** para la cons
 
 ## Características principales
 
+* **Sistema de Filtrado y búsqueda:** He añadido un sistema de filtrado por categoria (los nombres de los cursos), nivel de dificultad( inicial, intermedio o avanzado) y disponibilidad (disponibles, completos o todos).
 * **Catálogo de talleres:** Visualización dinámica de talleres con actualización de aforo en tiempo real.
 * **Control de disponibilidad:** Cálculo dinámico de plazas restantes y avisos visuales para talleres con aforo completo o en *"Última plaza"*.
 * **Validaciones robustas:**
@@ -95,6 +96,11 @@ curl.exe -i -X POST http://localhost:3000/talleres/2/inscripcion -H "Content-Typ
 Lo empleo para comprobar que en un taller que tiene ya 0 plazas disponibles, me frene el registro de una nueva peticion
 ```bash
 curl.exe -i -X POST http://localhost:3000/talleres/1/inscripcion -H "Content-Type: application/x-www-form-urlencoded" -d "nombre=Carla Lopez&email=Carla.lopez@gmail.com"
+```
+### 7. Filtro combinado (Categoría, Nivel y Disponibilidad)
+Permite aplicar múltiples criterios de forma simultánea evaluando las condiciones de forma acumulativa, devolviendo únicamente los talleres que coinciden con los tres parámetros elegidos.
+```bash
+curl.exe -i -X GET "http://localhost:3000/talleres?categoria=arte-3d&nivel=inicial&disponibilidad=disponibles"
 ```
 ## Instalación y Ejecución
 Para instalar las dependencias:
